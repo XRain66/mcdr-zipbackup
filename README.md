@@ -1,12 +1,12 @@
 # MCDR-ZipBackup
 
-> 本插件由 [PermanentBackup](https://github.com/TISUnion/PermanentBackup) 修改而来，感谢原作者的贡献！
+> 本插件由 [PermanentBackup](https://github.com/TISUnion/PermanentBackup) 修改而来
 
 ![Version](https://img.shields.io/badge/version-10.27-blue)
 ![License](https://img.shields.io/github/license/XRain66/mcdr-zipbackup)
 ![MCDR Version](https://img.shields.io/badge/mcdr-2.0%2B-green)
 
-一个可以定时永久备份Minecraft的MCDR插件
+一个可以带有定时的可以以压缩包形式备份的MCDR插件
 
 纳西妲好可爱呀(◍•ᴗ•◍)✧*！
 
@@ -85,12 +85,6 @@ pip install tqdm>=4.65.0
 ### 高级设置
 - `!!zb ziplevel <level>` - 设置压缩等级 (speed/best)
 - `!!zb status` - 查看当前状态
-
-## 🔒 权限设置
-
-- 0级: 查看备份列表
-- 2级: 创建备份、查看状态
-- 3级: 所有配置操作
 
 ## 📄 许可证
 
