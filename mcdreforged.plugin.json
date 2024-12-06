@@ -1,0 +1,11 @@
+{
+	"id": "zip_backup",
+	"version": "10.27",
+	"name": "Zip Backup",
+	"description": "A backup plugin for MCDR",
+	"author": "XRain666",
+	"link": "https://github.com/XRain66/mcdr-zipbackup",
+	"dependencies": {
+		"mcdreforged": ">=2.0.0"
+	}
+}
