@@ -62,7 +62,13 @@ config: Configure
 Prefix = '!!zb'
 CONFIG_FILE = os.path.join('config', 'zip_backup.json')
 HelpMessage = '''
-§a!!zb 永久备份插件§r
+§b ______  _         ____                  _                
+§b|__  / |(_)_ __   | __ )    __ _   ___ | | __ _   _ _ __  
+§b  / /  | | '_ \   |  _ \   / _` | / __|| |/ /| | | | '_ \ 
+§b / /_  | | |_) |  | |_) | | (_| || (__ |   < | |_| | |_) |
+§b/____| |_| .__/   |____/   \__,_| \___||_|\_\ \__,_| .__/ 
+§b         |_|                                        |_|    §6by XRain666§r
+§e ---------------------- v10.27 ---------------------- §r
 §7{0} make [<注释>]§r 创建一个备份
 §7{0} list§r 列出最近10个备份
 §7{0} listall§r 列出所有备份
@@ -73,8 +79,7 @@ HelpMessage = '''
 §7{0} time interval <时间间隔> <单位>§r §r设置自动备份时间间隔。§7[<单位>]§r可选s(秒）,m(分）,h(时),d(天)
 §7{0} time date <类型>§r §r设置自动备份日期类型。§7[<类型>]§r可选monthly(每月),weekly(每周),daily(每天)
 §7{0} time change <模式>§r §r切换备份模式。§7[<模式>]§r可选interval(间隔),date(日期)
-§a小草神什么的最可爱拉！§r
-§r由Fallen_Breath的Permanent Backup修改而来
+§a小草神什么的最可爱拉！(◕ᴗ◕✿)§r
 '''.strip().format(Prefix)
 game_saved = False
 plugin_unloaded = False
