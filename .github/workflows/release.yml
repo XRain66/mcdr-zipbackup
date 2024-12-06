@@ -18,14 +18,26 @@ jobs:
         version=$(grep -Po '"version":\s*"\K[^"]*' mcdreforged.plugin.json)
         echo "version=$version" >> $GITHUB_ENV
     
+    # 检查 tag 是否已存在
+    - name: Check if tag exists
+      id: check_tag
+      run: |
+        if [ $(git tag -l "v${{ env.version }}") ]; then
+          echo "tag_exists=true" >> $GITHUB_ENV
+        else
+          echo "tag_exists=false" >> $GITHUB_ENV
+        fi
+    
     # 创建 MCDR 插件文件
     - name: Create MCDR Plugin
+      if: env.tag_exists == 'false'
       run: |
         zip -r "zip-backup-v${{ env.version }}.mcdr" * -x ".git/*" ".github/*" "*.mcdr"
     
     # 创建 Release
     - name: Create Release
       id: create_release
+      if: env.tag_exists == 'false'
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -37,6 +49,7 @@ jobs:
     
     # 上传插件文件到 Release
     - name: Upload Release Asset
+      if: env.tag_exists == 'false'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,3 +58,9 @@ jobs:
         asset_path: ./zip-backup-v${{ env.version }}.mcdr
         asset_name: zip-backup-v${{ env.version }}.mcdr
         asset_content_type: application/zip
+        
+    # 如果 tag 已存在，输出提示信息
+    - name: Tag exists message
+      if: env.tag_exists == 'true'
+      run: |
+        echo "Tag v${{ env.version }} already exists. Please update the version number in mcdreforged.plugin.json to create a new release."
