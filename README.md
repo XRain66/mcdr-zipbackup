@@ -63,7 +63,7 @@ pip install tqdm>=4.65.0
     "auto_backup_interval": 3600,
     "auto_backup_unit": "s",
     "auto_backup_date_type": "daily",
-    "compression_level": "best"  // "speed"(最快速度) 或 "best"(LZMA最佳压缩比)
+    "compression_level": "best" 
 }
 ```
 
