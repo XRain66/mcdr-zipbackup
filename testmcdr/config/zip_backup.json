@@ -1,0 +1,27 @@
+{
+    "turn_off_auto_save": true,
+    "ignore_session_lock": true,
+    "backup_path": "./perma_backup",
+    "server_path": "./server",
+    "world_names": [
+        "world"
+    ],
+    "auto_backup_enabled": true,
+    "auto_backup_mode": "date",
+    "auto_backup_interval": 3600,
+    "auto_backup_unit": "s",
+    "auto_backup_date_type": "weekly",
+    "compression_level": "best",
+    "minimum_permission_level": {
+        "make": 2,
+        "list": 0,
+        "listall": 2,
+        "stats": 0,
+        "time.enable": 3,
+        "time.disable": 3,
+        "time.interval": 3,
+        "time.date": 3,
+        "time.change": 3,
+        "ziplevel": 3
+    }
+}

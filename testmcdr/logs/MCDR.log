@@ -1,0 +1,26 @@
+[MCDR] [2024-12-06 13:43:09.27] [MainThread/INFO] [mcdr_server.py:615(__on_mcdr_start)]: MCDReforged 2.13.2 is starting
+[MCDR] [2024-12-06 13:43:09.33] [MainThread/INFO] [python_plugin.py:36(load)]: MCDReforged is running on Python 3.10.10 environment
+[MCDR] [2024-12-06 13:43:09.34] [TaskExecutor/INFO] [plugin_manager.py:693(refresh_all_plugins_action)]: Refreshing all plugins
+[MCDR] [2024-12-06 13:43:09.63] [TaskExecutor/INFO] [plugin_manager.py:217(__load_plugin)]: Plugin zip_backup@10.27 loaded
+[MCDR] [2024-12-06 13:43:09.180] [TaskExecutor/INFO] [plugin_server_interface.py:277(log)] [zip_backup]: Config file loaded
+[MCDR] [2024-12-06 13:43:09.181] [TaskExecutor/INFO] [__init__.py:585(on_load)] [zip_backup]: 
+§b ______  _         ____                  _                
+§b|__  / |(_)_ __   | __ )    __ _   ___ | | __ _   _ _ __  
+§b  / /  | | '_ \   |  _ \   / _` | / __|| |/ /| | | | '_ \ 
+§b / /_  | | |_) |  | |_) | | (_| || (__ |   < | |_| | |_) |
+§b/____| |_| .__/   |____/   \__,_| \___||_|\_\ \__,_| .__/ §6by XRain666§r
+§b         |_|                                        |_|    §r
+§e ---------------------- v10.27 ---------------------- §r
+
+[MCDR] [2024-12-06 13:43:09.190] [TaskExecutor/INFO] [mcdr_server.py:294(load_plugins)]: Loaded: §71§r plugins; Active plugin count: §73§r
+[MCDR] [2024-12-06 13:43:09.192] [MainThread/INFO] [mcdr_server.py:409(start_server)]: Starting the server with command 'java -Xmx2G -jar fabric-server-launch.jar nogui'
+[MCDR] [2024-12-06 13:43:09.198] [MainThread/INFO] [mcdr_server.py:491(__on_server_start)]: Server is running at PID 3968
+[MCDR] [2024-12-06 13:43:44.824] [TaskExecutor/INFO] [misc_utils.py:30(print_text_to_console)]: §a已将压缩等级设置为最佳压缩比(LZMA)§r
+[MCDR] [2024-12-06 13:43:49.261] [Zip-Backup/INFO] [misc_utils.py:30(print_text_to_console)]: [zip_backup] 备份中...请稍等
+[MCDR] [2024-12-06 13:43:49.981] [Zip-Backup/INFO] [misc_utils.py:30(print_text_to_console)]: [zip_backup] 创建压缩文件§ebackup_2024-12-06_13-43-49.zip§r中...
+[MCDR] [2024-12-06 13:43:51.88] [Zip-Backup/INFO] [misc_utils.py:30(print_text_to_console)]: [zip_backup] 备份§a完成§r，耗时1.8秒
+[MCDR] [2024-12-06 13:44:00.598] [MainThread/INFO] [mcdr_server.py:497(__on_server_stop)]: Server process stopped with code 0
+[MCDR] [2024-12-06 13:44:00.599] [MainThread/INFO] [mcdr_server.py:515(__on_server_stop)]: Server stopped
+[MCDR] [2024-12-06 13:44:00.599] [MainThread/INFO] [mcdr_server.py:654(__on_mcdr_stop)]: Stopping MCDR
+[MCDR] [2024-12-06 13:44:00.600] [MainThread/INFO] [console_handler.py:306(stop_kits)]: Stopping advanced console
+[MCDR] [2024-12-06 13:44:00.969] [MainThread/INFO] [mcdr_server.py:662(__on_mcdr_stop)]: bye
