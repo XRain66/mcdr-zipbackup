@@ -18,7 +18,7 @@ from mcdreforged.api.all import *
 class Configure(Serializable):
     turn_off_auto_save: bool = True
     ignore_session_lock: bool = True
-    backup_path: str = './perma_backup'
+    backup_path: str = './zip_backup'
     server_path: str = './server'
     world_names: List[str] = [
         'world'
@@ -32,6 +32,10 @@ class Configure(Serializable):
     # 日期模式配置
     auto_backup_date_type: str = 'daily'  # 日期类型：'monthly', 'weekly', 'daily'
     compression_level: str = 'best'  # 压缩等级：'speed' 或 'best'
+    # 备份文件移动相关配置
+    move_after_backup: bool = False  # 是否在备份后移动文件
+    move_to_path: str = './backup_archive'  # 移动目标路径
+    delete_after_move: bool = False  # 是否在移动后删除原文件
 
     minimum_permission_level: Dict[str, int] = {
         'make': 2,
@@ -43,7 +47,10 @@ class Configure(Serializable):
         'time.interval': 3,
         'time.date': 3,
         'time.change': 3,
-        'ziplevel': 3
+        'ziplevel': 3,
+        'move.enable': 3,
+        'move.disable': 3,
+        'move.path': 3
     }
 
     def get_compression_method(self) -> int:
@@ -68,7 +75,7 @@ HelpMessage = '''
 §b / /_  | | |_) |  | |_) | | (_| || (__ |   < | |_| | |_) |
 §b/____| |_| .__/   |____/   \__,_| \___||_|\_\ \__,_| .__/ 
 §b         |_|                                        |_|    §6by XRain666§r
-§e ---------------------- v1.0.28 ---------------------- §r
+§e ---------------------- v1.0.29 ---------------------- §r
 §7{0} make [<注释>]§r 创建一个备份
 §7{0} list§r 列出最近10个备份
 §7{0} listall§r 列出所有备份
@@ -79,6 +86,9 @@ HelpMessage = '''
 §7{0} time interval <时间间隔> <单位>§r §r设置自动备份时间间隔。§7[<单位>]§r可选s(秒）,m(分）,h(时),d(天)
 §7{0} time date <类型>§r §r设置自动备份日期类型。§7[<类型>]§r可选monthly(每月),weekly(每周),daily(每天)
 §7{0} time change <模式>§r §r切换备份模式。§7[<模式>]§r可选interval(间隔),date(日期)
+§7{0} move enable§r 启用备份后移动功能
+§7{0} move disable§r 禁用备份后移动功能
+§7{0} move path <路径>§r 设置备份移动目标路径
 §a小草神什么的最可爱拉！(◕ᴗ◕✿)§r
 '''.strip().format(Prefix)
 game_saved = False
@@ -95,7 +105,7 @@ PLUGIN_LOADED_ART = r'''
 §b / /_  | | |_) |  | |_) | | (_| || (__ |   < | |_| | |_) |
 §b/____| |_| .__/   |____/   \__,_| \___||_|\_\ \__,_| .__/ §6by XRain666§r
 §b         |_|                                        |_|    §r
-§e ---------------------- v10.27 ---------------------- §r
+§e ---------------------- v10.29 ---------------------- §r
 '''
 
 '''
@@ -200,6 +210,54 @@ def zip_world(server: ServerInterface, comment: Optional[str] = None):
         progress.close()
 
 
+def move_backup_file(server: ServerInterface, backup_file: str):
+    """移动备份文件到指定目录"""
+    if not config.move_after_backup:
+        return
+    
+    try:
+        # 确保目标目录存在
+        os.makedirs(config.move_to_path, exist_ok=True)
+        
+        # 获取文件名和大小
+        file_name = os.path.basename(backup_file)
+        file_size = os.path.getsize(backup_file)
+        target_path = os.path.join(config.move_to_path, file_name)
+        
+        # 创建进度条
+        progress = tqdm(total=file_size, unit='B', unit_scale=True,
+                       desc='移动文件', ncols=100,
+                       bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]')
+
+        # 使用分块读写来移动文件，以便显示进度
+        try:
+            with open(backup_file, 'rb') as src, open(target_path, 'wb') as dst:
+                while True:
+                    chunk = src.read(8192)  # 8KB 缓冲区
+                    if not chunk:
+                        break
+                    dst.write(chunk)
+                    progress.update(len(chunk))
+            
+            # 根据配置决定是否删除源文件
+            if config.delete_after_move:
+                os.remove(backup_file)
+                server.logger.info(f'备份文件已移动到：{target_path} 并删除原文件')
+            else:
+                server.logger.info(f'备份文件已复制到：{target_path}')
+            
+        except Exception as e:
+            # 如果移动过程中出错，清理目标文件
+            if os.path.exists(target_path):
+                os.remove(target_path)
+            raise e
+        finally:
+            progress.close()
+            
+    except Exception as e:
+        server.logger.error(f'移动备份文件失败：{str(e)}')
+
+
 @new_thread('Zip-Backup')
 def create_backup(source: CommandSource, context: dict):
     """创建备份"""
@@ -243,6 +301,10 @@ def create_backup(source: CommandSource, context: dict):
             info_message(source, f'创建压缩文件§e{os.path.basename(zip_file_name)}§r中...', broadcast=True)
             zip_world(source.get_server(), comment)
             
+            # 如果启用了移动功能，移动备份文件
+            if config.move_after_backup:
+                move_backup_file(source.get_server(), zip_file_name)
+            
             info_message(source, '备份§a完成§r，耗时{}秒'.format(round(time.time() - start_time, 1)), broadcast=True)
             
         except PermissionError as e:
@@ -251,7 +313,7 @@ def create_backup(source: CommandSource, context: dict):
         except Exception as e:
             info_message(source, f'§c备份失败：{str(e)}§r', broadcast=True)
             source.get_server().logger.exception('创建备份失败')
-            
+
     finally:
         if not auto_save_on:
             source.get_server().execute('save-on')
@@ -570,6 +632,12 @@ def show_backup_stats(source: CommandSource):
     # 添加压缩等级信息
     level_names = {'speed': '最快速度', 'best': '最佳压缩比(LZMA)'}
     status_lines.append(f'压缩等级: §6{level_names.get(config.compression_level, "未知")}§r')
+
+    # 添加移动功能状态信息
+    status_lines.append(f'备份后移动: {"§a已开启§r" if config.move_after_backup else "§c已关闭§r"}')
+    if config.move_after_backup:
+        status_lines.append(f'移动目标路径: §e{config.move_to_path}§r')
+        status_lines.append(f'移动后删除原文件: {"§a是§r" if config.delete_after_move else "§c否§r"}')
     
     # 输出信息
     for line in status_lines:
@@ -697,6 +765,35 @@ def register_command(server: PluginServerInterface):
                 Text('level').
                 runs(lambda src, ctx: set_compression_level(src, ctx))
             )
+        ).
+        then(
+            Literal('move').
+            then(
+                get_literal_node('enable').
+                runs(lambda src: enable_move_backup(src))
+            ).
+            then(
+                get_literal_node('disable').
+                runs(lambda src: disable_move_backup(src))
+            ).
+            then(
+                get_literal_node('path').
+                then(
+                    Text('path').
+                    runs(lambda src, ctx: set_move_path(src, ctx))
+                )
+            ).
+            then(
+                get_literal_node('delete').
+                then(
+                    get_literal_node('enable').
+                    runs(lambda src: enable_delete_after_move(src))
+                ).
+                then(
+                    get_literal_node('disable').
+                    runs(lambda src: disable_delete_after_move(src))
+                )
+            )
         )
     )
 
@@ -705,3 +802,40 @@ def format_file_name(file_name):
     for c in ['/', '\\', ':', '*', '?', '"', '|', '<', '>']:
         file_name = file_name.replace(c, '')
     return file_name
+
+
+def enable_move_backup(source: CommandSource):
+    """启用备份后移动功能"""
+    config.move_after_backup = True
+    config.save()
+    source.reply('§a已启用备份后移动功能§r')
+
+
+def disable_move_backup(source: CommandSource):
+    """禁用备份后移动功能"""
+    config.move_after_backup = False
+    config.save()
+    source.reply('§c已禁用备份后移动功能§r')
+
+
+def set_move_path(source: CommandSource, context: dict):
+    """设置备份移动目标路径"""
+    path = context['path']
+    config.move_to_path = path
+    config.save()
+    source.reply(f'§a已设置备份移动目标路径为：{path}§r')
+    show_backup_stats(source)
+
+
+def enable_delete_after_move(source: CommandSource):
+    """启用移动后删除原文件"""
+    config.delete_after_move = True
+    config.save()
+    source.reply('§a已启用移动后删除原文件§r')
+
+
+def disable_delete_after_move(source: CommandSource):
+    """禁用移动后删除原文件"""
+    config.delete_after_move = False
+    config.save()
+    source.reply('§c已禁用移动后删除原文件§r')

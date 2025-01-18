@@ -2,7 +2,7 @@
 
 > 本插件由 [PermanentBackup](https://github.com/TISUnion/PermanentBackup) 修改而来
 
-![Version](https://img.shields.io/badge/version-10.27-blue)
+![Version](https://img.shields.io/badge/version-1.0.28-blue)
 ![License](https://img.shields.io/github/license/XRain66/mcdr-zipbackup)
 ![MCDR Version](https://img.shields.io/badge/mcdr-2.0%2B-green)
 
@@ -22,10 +22,12 @@
   - 支持备份注释
   - 备份列表查看
   - 实时进度显示
+  - 备份完成后备份文件移动到其他目录
 - ⚙️ 高级配置
   - 自定义备份路径
   - 多级权限控制
   - 自动保存控制
+  - 自定义移动目标路径
 
 ## 🚀 安装/使用
 
@@ -63,7 +65,10 @@ pip install tqdm>=4.65.0
     "auto_backup_interval": 3600,
     "auto_backup_unit": "s",
     "auto_backup_date_type": "daily",
-    "compression_level": "best" 
+    "compression_level": "best",
+    "move_after_backup": false,
+    "move_to_path": "./backup_archive",
+    "delete_after_move": true,
 }
 ```
 
@@ -85,6 +90,11 @@ pip install tqdm>=4.65.0
 
 ### 高级设置
 - `!!zb ziplevel <level>` - 设置压缩等级 (speed/best)
+- `!!zb move enable` - 启用备份后移动功能
+- `!!zb move disable` - 禁用备份后移动功能
+- `!!zb move path <路径>` - 设置备份移动目标路径
+- `!!zb move delete enable` - 启用移动后删除功能
+- `!!zb move delete disable` - 禁用移动后删除功能
 
 ## 📄 许可证
 
